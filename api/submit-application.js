@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import { createTransporter } from 'nodemailer';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     }
 
     // Email configuration
-    const transporter = nodemailer.createTransporter({
+    const transporter = createTransporter({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
@@ -50,67 +50,30 @@ export default async function handler(req, res) {
       }
     });
 
-    // Create beautiful email content
+    // Create email content
     const emailContent = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-          .header { background: linear-gradient(135deg, #10B981, #34D399); color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
-          .content { background: #f8f9fa; padding: 20px; }
-          .section { background: white; margin: 15px 0; padding: 15px; border-radius: 8px; border-left: 4px solid #10B981; }
-          .label { font-weight: bold; color: #10B981; }
-          .value { margin-left: 10px; }
-          .footer { background: #e5e7eb; padding: 15px; border-radius: 0 0 8px 8px; text-align: center; color: #6b7280; font-size: 14px; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <h1>🚀 New CapWaze Application</h1>
-            <p>A new funding application has been submitted</p>
-          </div>
-          
-          <div class="content">
-            <div class="section">
-              <h3 style="color: #10B981; margin-top: 0;">👤 Contact Information</h3>
-              <p><span class="label">Name:</span><span class="value">${firstName} ${lastName}</span></p>
-              <p><span class="label">Email:</span><span class="value"><a href="mailto:${email}">${email}</a></span></p>
-              <p><span class="label">Phone:</span><span class="value"><a href="tel:${phone}">${phone}</a></span></p>
-              <p><span class="label">Company:</span><span class="value">${company}</span></p>
-            </div>
-            
-            <div class="section">
-              <h3 style="color: #10B981; margin-top: 0;">🏢 Business Details</h3>
-              <p><span class="label">Business Type:</span><span class="value">${businessType || 'Not specified'}</span></p>
-              <p><span class="label">Years in Business:</span><span class="value">${businessAge || 'Not specified'}</span></p>
-              <p><span class="label">Monthly Revenue:</span><span class="value">${monthlyRevenue || 'Not specified'}</span></p>
-            </div>
-            
-            <div class="section">
-              <h3 style="color: #10B981; margin-top: 0;">💰 Funding Information</h3>
-              <p><span class="label">Funding Amount:</span><span class="value"><strong>${fundingAmount}</strong></span></p>
-              <p><span class="label">Use of Funds:</span><span class="value">${useOfFunds || 'Not specified'}</span></p>
-              <p><span class="label">Timeframe:</span><span class="value">${timeframe || 'Not specified'}</span></p>
-            </div>
-            
-            ${additionalInfo ? `
-              <div class="section">
-                <h3 style="color: #10B981; margin-top: 0;">📝 Additional Information</h3>
-                <p>${additionalInfo}</p>
-              </div>
-            ` : ''}
-          </div>
-          
-          <div class="footer">
-            <p><strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
-            <p><strong>Source:</strong> CapWaze Contact Form</p>
-          </div>
-        </div>
-      </body>
-      </html>
+      <h2>🚀 New CapWaze Application</h2>
+      
+      <h3>👤 Contact Information</h3>
+      <p><strong>Name:</strong> ${firstName} ${lastName}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone:</strong> ${phone}</p>
+      <p><strong>Company:</strong> ${company}</p>
+      
+      <h3>🏢 Business Details</h3>
+      <p><strong>Business Type:</strong> ${businessType || 'Not specified'}</p>
+      <p><strong>Years in Business:</strong> ${businessAge || 'Not specified'}</p>
+      <p><strong>Monthly Revenue:</strong> ${monthlyRevenue || 'Not specified'}</p>
+      
+      <h3>💰 Funding Information</h3>
+      <p><strong>Funding Amount:</strong> ${fundingAmount}</p>
+      <p><strong>Use of Funds:</strong> ${useOfFunds || 'Not specified'}</p>
+      <p><strong>Timeframe:</strong> ${timeframe || 'Not specified'}</p>
+      
+      ${additionalInfo ? `<h3>📝 Additional Information</h3><p>${additionalInfo}</p>` : ''}
+      
+      <hr>
+      <p><small>Submitted on: ${new Date().toLocaleString()}</small></p>
     `;
 
     // Send email
