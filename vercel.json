@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/submit-application.cjs": {
+    "api/*": {
       "maxDuration": 30
     }
   }
